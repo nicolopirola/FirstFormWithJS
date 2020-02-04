@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <link href="css/primoFormStyle.css" rel="stylesheet" type="text/css">
+   <link href="https://fonts.googleapis.com/css?family=Signika&display=swap" rel="stylesheet">
+</head>
+
+<body>
+   <div class="flex-container">
+      <div class="contenitorePadre">
+
+         <div class="box" id="contenitore">
+
+
+            <div class="boxcharge hidden" data-charge="false" id='immagine'>
+               <img src='immagini/ajax-loader.gif' id="loader">
+            </div>
+            <p><b>Primo Form</b></p>
+            <form name="accesso" method="post">
+               <input name="username" type="text" placeholder="Insert Username" />
+               <input name="password" type="text" placeholder="Insert Password" />
+               <input type="button" id="execute" value="confirm" />
+            </form>
+         </div>
+      </div>
+   </div>
+   <script>
+
+      function loading() {
+         document.getElementById("immagine").className =
+            document.getElementById("immagine").className.replace(/\bhidden\b/, '');
+
+         var xhr = new XMLHttpRequest();
+         xhr.onreadystatechange = function () {
+            if (this.readyState == 4) {
+               document.getElementById("immagine").classList.add("hidden");
+               console.log("status: ", this.status)
+               switch (this.status) {
+                  case 200:
+                     // document.getElementById("immagine").innerHTML = this.responseText;
+
+                     const Father = document.querySelector(".contenitorePadre");
+                     const x = contenitore;
+                     const newElement = document.createElement("div");
+                     newElement.textContent = "login successful";
+                     Father.classList.add("change");
+                     Father.replaceChild(newElement, x)
+                     break;
+                  case 404:
+                     alert("La pagina indicata non esiste!");
+                     break;
+                  case 500:
+                     alert("Si è verificato un errore sul server!");
+                     break;
+                  default:
+                     const Father2 = document.querySelector(".contenitorePadre");
+                     const y = contenitore;
+                     const errorElement = document.createElement("div");
+                     errorElement.textContent = "Error n°: " + this.status + " occured during the elaboration of the request";
+                     Father2.classList.add("error");
+                     Father2.replaceChild(errorElement, y)
+               }
+            }
+         };
+         xhr.open("POST", "https://reqres.in/api/login", true);
+         // xhr.onload = function () {
+         //    console.log(xhr.responseText);
+         // };
+         var email = document.querySelectorAll("input[name = username]");
+         email = email[0];
+         var psw = document.querySelectorAll("input[name = password]");
+         psw = psw[0];
+         var z = { "email": email.value, "password": psw.value };
+
+         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+         xhr.send(JSON.stringify(z));
+
+      }
+      function sendForm() {
+         var getInputs = document.querySelectorAll("input[type = text]");
+         var errorMessage = "";
+         console.log("getInputs", getInputs);
+         for (i of getInputs) {
+            console.log(i.value);
+            if (i.value.length == 0) {
+               if (errorMessage.length > 0) errorMessage += "\n";
+               errorMessage += "Il campo " + i.name + " non è stato compilato";
+            }
+         }
+         if (errorMessage.length > 0)
+            alert(errorMessage);
+         else
+            loading();
+      }
+      document.getElementById("execute").addEventListener("click", sendForm);
+   </script>
+</body>
+</html>
